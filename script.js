@@ -1,129 +1,86 @@
 const SUPABASE_URL =
-"https://exbenmxowaqjjucafgqd.supabase.co";
+  "https://exbenmxowaqjjucafgqd.supabase.co";
 
 const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YmVubXhvd2Fxamp1Y2FmZ3FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NjIzODcsImV4cCI6MjA5NjIzODM4N30.RLpl_2Q8o8Hk4brGti5-TqyVazNgcKs1EJCHklHOSQc";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YmVubXhvd2Fxamp1Y2FmZ3FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NjIzODcsImV4cCI6MjA5NjIzODM4N30.RLpl_2Q8o8Hk4brGti5-TqyVazNgcKs1EJCHklHOSQc";
 
 const supabaseClient =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+  window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-async function trackClick(platform){
 
-await supabaseClient
-.from("social_links")
-.insert([
-{
-platform:platform
-}
-]);
+/* -------------------------
+   LOAD LINKS FROM SUPABASE
+-------------------------- */
+async function loadLinks() {
 
-}
+  const { data, error } =
+    await supabaseClient
+      .from("social_links")
+      .select("*")
+      .limit(1)
+      .single();
 
-async function loadLinks(){
+  if (error) {
+    console.error("Failed to load links:", error);
+    return;
+  }
 
-const {data,error} =
-await supabaseClientsupabase
-.from("social_links")
-.select("*")
-.limit(1)
-.single();
+  const container = document.getElementById("buttons");
 
-if(error){
+  if (!container) {
+    console.error("Buttons container not found");
+    return;
+  }
 
-console.error(error);
-return;
+  container.classList.add("buttons");
 
-}
+  const links = [
+    { name: "Facebook", url: data.facebook, icon: "fa-brands fa-facebook-f", class: "facebook" },
+    { name: "Instagram", url: data.instagram, icon: "fa-brands fa-instagram", class: "instagram" },
+    { name: "TikTok", url: data.tiktok, icon: "fa-brands fa-tiktok", class: "tiktok" },
+    { name: "Website", url: data.website, icon: "fa-solid fa-globe", class: "website" },
+    { name: "WhatsApp", url: data.whatsapp, icon: "fa-brands fa-whatsapp", class: "whatsapp" },
+    { name: "Call Us", url: `tel:${data.phone}`, icon: "fa-solid fa-phone", class: "phone" },
+    { name: "Find Us", url: data.google_maps, icon: "fa-solid fa-location-dot", class: "maps" }
+  ];
 
-const container =
-document.getElementById("buttons");
+  links.forEach(link => {
 
-container.classList.add("buttons");
+    if (!link.url) return;
 
-const links = [
+    const btn = document.createElement("a");
+    btn.className = `btn ${link.class}`;
+    btn.href = link.url;
+    btn.target = "_blank";
 
-{
-name:"Facebook",
-url:data.facebook,
-icon:"fa-brands fa-facebook-f",
-class:"facebook"
-},
+    btn.innerHTML = `<i class="${link.icon}"></i> ${link.name}`;
 
-{
-name:"Instagram",
-url:data.instagram,
-icon:"fa-brands fa-instagram",
-class:"instagram"
-},
+    btn.addEventListener("click", () => {
+      trackClick(link.name);
+    });
 
-{
-name:"TikTok",
-url:data.tiktok,
-icon:"fa-brands fa-tiktok",
-class:"tiktok"
-},
-
-{
-name:"Website",
-url:data.website,
-icon:"fa-solid fa-globe",
-class:"website"
-},
-
-{
-name:"WhatsApp",
-url:data.whatsapp,
-icon:"fa-brands fa-whatsapp",
-class:"whatsapp"
-},
-
-{
-name:"Call Us",
-url:`tel:${data.phone}`,
-icon:"fa-solid fa-phone",
-class:"phone"
-},
-
-{
-name:"Find Us",
-url:data.google_maps,
-icon:"fa-solid fa-location-dot",
-class:"maps"
+    container.appendChild(btn);
+  });
 }
 
-];
 
-links.forEach(link => {
-
-if(!link.url) return;
-
-const btn =
-document.createElement("a");
-
-btn.className =
-`btn ${link.class}`;
-
-btn.href =
-link.url;
-
-btn.target =
-"_blank";
-
-btn.innerHTML =
-`<i class="${link.icon}"></i> ${link.name}`;
-
-btn.addEventListener(
-"click",
-()=>trackClick(link.name)
-);
-
-container.appendChild(btn);
-
-});
-
+/* -------------------------
+   TRACK CLICK ANALYTICS
+-------------------------- */
+async function trackClick(platform) {
+  try {
+    await supabaseClient
+      .from("link_clicks")
+      .insert([
+        { platform: platform }
+      ]);
+  } catch (err) {
+    console.error("Click tracking failed:", err);
+  }
 }
 
-loadLinks();
+
+/* -------------------------
+   INIT APP (SAFE LOAD)
+-------------------------- */
+document.addEventListener("DOMContentLoaded", loadLinks);

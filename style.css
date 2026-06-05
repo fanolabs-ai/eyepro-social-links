@@ -21,8 +21,6 @@ linear-gradient(
 #eef5ff
 );
 
-}
-
 font-family:
 Segoe UI,
 sans-serif;
@@ -81,7 +79,7 @@ font-size:15px;
 
 h1{
 
-color:var(--blue);
+color:var(--eyepro-blue);
 margin-bottom:8px;
 
 }
@@ -156,7 +154,7 @@ background:#000;
 }
 
 .website{
-background:var(--blue);
+background:var(--eyepro-blue);
 }
 
 .whatsapp{
@@ -168,7 +166,7 @@ background:#555;
 }
 
 .maps{
-background:var(--gold);
+background:var(--eyepro-gold);
 }
 
 footer{
@@ -223,9 +221,4 @@ width:150px;
 
   
 }
-
-
-
-
-
 

@@ -9,6 +9,20 @@ const supabaseClient =
 
 
 /* -------------------------
+   LINK CONFIG (order = display order)
+-------------------------- */
+const LINK_CONFIG = {
+  "Facebook":    { icon: "fa-brands fa-facebook-f",    class: "facebook" },
+  "Instagram":   { icon: "fa-brands fa-instagram",     class: "instagram" },
+  "TikTok":      { icon: "fa-brands fa-tiktok",        class: "tiktok" },
+  "Website":     { icon: "fa-solid fa-globe",          class: "website" },
+  "whatsapp":    { icon: "fa-brands fa-whatsapp",      class: "whatsapp",  label: "WhatsApp" },
+  "phone":       { icon: "fa-solid fa-phone",          class: "phone",     label: "Call Us", prefix: "tel:" },
+  "google_maps": { icon: "fa-solid fa-location-dot",   class: "maps",      label: "Find Us" }
+};
+
+
+/* -------------------------
    LOAD LINKS FROM SUPABASE
 -------------------------- */
 async function loadLinks() {
@@ -16,9 +30,7 @@ async function loadLinks() {
   const { data, error } =
     await supabaseClient
       .from("social_links")
-      .select("*")
-      .limit(1)
-      .single();
+      .select("platform, url");
 
   if (error) {
     console.error("Failed to load links:", error);
@@ -26,38 +38,30 @@ async function loadLinks() {
   }
 
   const container = document.getElementById("buttons");
-
-  if (!container) {
-    console.error("Buttons container not found");
-    return;
-  }
-
+  if (!container) return;
   container.classList.add("buttons");
 
-  const links = [
-    { name: "Facebook", url: data.facebook, icon: "fa-brands fa-facebook-f", class: "facebook" },
-    { name: "Instagram", url: data.instagram, icon: "fa-brands fa-instagram", class: "instagram" },
-    { name: "TikTok", url: data.tiktok, icon: "fa-brands fa-tiktok", class: "tiktok" },
-    { name: "Website", url: data.website, icon: "fa-solid fa-globe", class: "website" },
-    { name: "WhatsApp", url: data.whatsapp, icon: "fa-brands fa-whatsapp", class: "whatsapp" },
-    { name: "Call Us", url: `tel:${data.phone}`, icon: "fa-solid fa-phone", class: "phone" },
-    { name: "Find Us", url: data.google_maps, icon: "fa-solid fa-location-dot", class: "maps" }
-  ];
+  // Build a map: platform -> url
+  const urlMap = {};
+  data.forEach(row => {
+    urlMap[row.platform] = row.url;
+  });
 
-  links.forEach(link => {
+  // Render in defined order
+  Object.entries(LINK_CONFIG).forEach(([platform, config]) => {
+    const rawUrl = urlMap[platform];
+    if (!rawUrl) return;
 
-    if (!link.url) return;
+    const url = config.prefix ? `${config.prefix}${rawUrl}` : rawUrl;
+    const label = config.label || platform;
 
     const btn = document.createElement("a");
-    btn.className = `btn ${link.class}`;
-    btn.href = link.url;
+    btn.className = `btn ${config.class}`;
+    btn.href = url;
     btn.target = "_blank";
+    btn.innerHTML = `<i class="${config.icon}"></i> ${label}`;
 
-    btn.innerHTML = `<i class="${link.icon}"></i> ${link.name}`;
-
-    btn.addEventListener("click", () => {
-      trackClick(link.name);
-    });
+    btn.addEventListener("click", () => trackClick(platform));
 
     container.appendChild(btn);
   });
@@ -71,9 +75,7 @@ async function trackClick(platform) {
   try {
     await supabaseClient
       .from("link_clicks")
-      .insert([
-        { platform: platform }
-      ]);
+      .insert([{ platform }]);
   } catch (err) {
     console.error("Click tracking failed:", err);
   }
@@ -81,6 +83,6 @@ async function trackClick(platform) {
 
 
 /* -------------------------
-   INIT APP (SAFE LOAD)
+   INIT
 -------------------------- */
 document.addEventListener("DOMContentLoaded", loadLinks);

@@ -12,8 +12,8 @@ SUPABASE_KEY
 
 async function trackClick(platform){
 
-await supabase
-.from("link_clicks")
+await supabaseClient
+.from("social_links")
 .insert([
 {
 platform:platform
@@ -25,8 +25,8 @@ platform:platform
 async function loadLinks(){
 
 const {data,error} =
-await supabase
-.from("company_links")
+await supabaseClientsupabase
+.from("social_links")
 .select("*")
 .limit(1)
 .single();

@@ -4,7 +4,7 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YmVubXhvd2Fxamp1Y2FmZ3FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NjIzODcsImV4cCI6MjA5NjIzODM4N30.RLpl_2Q8o8Hk4brGti5-TqyVazNgcKs1EJCHklHOSQc";
 
-const supabase =
+const supabaseClient =
 window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY

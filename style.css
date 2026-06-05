@@ -1,9 +1,8 @@
 :root{
 
---blue:#004687;
---gold:#C49D29;
---cream:#FAF9F6;
---dark:#202124;
+--eyepro-blue:#004687;
+--eyepro-gold:#C7A23A;
+--eyepro-light:#F8F9FA;
 
 }
 
@@ -15,11 +14,14 @@ box-sizing:border-box;
 
 body{
 
-background:linear-gradient(
+background:
+linear-gradient(
 135deg,
-#f7f9fc,
-#eef3f9
+#ffffff,
+#eef5ff
 );
+
+}
 
 font-family:
 Segoe UI,
@@ -60,10 +62,8 @@ animation:fadeIn 1s ease;
 
 .logo{
 
-width:180px;
+width:220px;
 max-width:100%;
-
-margin-bottom:15px;
 
 }
 

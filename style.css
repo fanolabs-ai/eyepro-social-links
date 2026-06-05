@@ -67,6 +67,18 @@ max-width:100%;
 
 }
 
+.welcome{
+
+margin-top:10px;
+margin-bottom:25px;
+
+color:#666;
+
+font-size:15px;
+
+}
+
+
 h1{
 
 color:var(--blue);
@@ -96,11 +108,11 @@ display:flex;
 align-items:center;
 justify-content:center;
 
-gap:10px;
+gap:12px;
 
-padding:15px;
+padding:16px;
 
-border-radius:14px;
+border-radius:16px;
 
 font-weight:600;
 
@@ -109,6 +121,9 @@ font-size:17px;
 text-decoration:none;
 
 color:white;
+
+box-shadow:
+0 5px 15px rgba(0,0,0,.12);
 
 transition:.3s;
 

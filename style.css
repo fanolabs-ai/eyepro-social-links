@@ -174,8 +174,20 @@ background:var(--gold);
 footer{
 
 margin-top:25px;
+
 font-size:13px;
-color:#777;
+
+color:#666;
+
+text-align:center;
+
+}
+
+.footer-brand{
+
+font-weight:bold;
+
+margin-bottom:8px;
 
 }
 
@@ -203,4 +215,17 @@ padding:25px;
 width:150px;
 }
 
+
+
+
+
+
+
+  
 }
+
+
+
+
+
+
